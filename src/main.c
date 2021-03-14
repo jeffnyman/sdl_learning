@@ -23,6 +23,13 @@ int main( int argc, char* argv[] ) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
 
+    /*
+    An "SDL event" is actually a structure. In fact, an SDL_Event is just a
+    big collection of structs, like SDL_WindowEvent, SDL_KeyboardEvent, and
+    so on.
+    */
+    SDL_Event event;
+
     printf("\nSDL Example Running ...\n");
 
     printf("Initializing SDL ...\n");
@@ -76,38 +83,68 @@ int main( int argc, char* argv[] ) {
         return false;
     }
 
-    /*
-    Whatever is rendered to the window will be a certain color. You can set
-    the draw color of the renderer and this color will impact whatever is
-    rendered next. Note that the last argument is called the "alpha value."
-    A value of 255 refers to SDL_ALPHA_OPAQUE. A value of 0 would refer to
-    SDL_ALPHA_TRANSPARENT.
-    */
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-    /*
-    Now you can clear the current rendering target. This will "clear" it
-    with whatever the current drawing color is.
-    */
-    SDL_RenderClear(renderer);
-
-    /*
-    An important thing to know about rendering is that just because something
-    has been drawn to the window doesn't mean that whatever was drawn will be
-    seen. It's required to update the window so that everything is shown.
-    What this is doing is updating the window with any rendering that was
-    performed since the previous call to SDL_RenderPresent().
-    */
-    SDL_RenderPresent(renderer);
-
     printf("All looks good...\n");
+
+    printf("Running the game loop ...\n");
+
+    bool running = true;
 
     /*
     Any SDL-based program is going to need a loop. That loop will make sure
-    that execution takes place in a persistent context. Until there is such
-    a loop, a delay, measured in millisecond, has to be introduced.
+    that execution takes place in a persistent context.
     */
-    SDL_Delay(3000);
+    while (running) {
+        /*
+        A delay such as the one below, from previous iterations of this code,
+        is no longer needed.
+        */
+        // SDL_Delay(3000);
+
+        /*
+        Polling events means removing the next event from the event queue.
+        If there are no events on the queue SDL_PollEvent returns 0 and if
+        there are events it returns 1. This makes it easy for a loop to be
+        used to process each event in turn. The SDL_PollEvent() function
+        takes a pointer to an SDL_Event structure that is filled with event
+        information. If SDL_PollEvent() removes an event from the queue
+        then the event information will be placed in the event structure.
+        The type of event will be placed in the type member of event. This
+        makes it easy to handle each event type separately by using a switch
+        statement or a series of if blocks.
+        */
+        while (SDL_PollEvent(&event) > 0) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+            }
+        }
+
+        /*
+        Whatever is rendered to the window will be a certain color. You can
+        set the draw color of the renderer and this color will impact whatever
+        is rendered next. Note that the last argument is called the "alpha
+        value." A value of 255 refers to SDL_ALPHA_OPAQUE. A value of 0 would
+        refer to SDL_ALPHA_TRANSPARENT.
+        */
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+        /*
+        Now you can clear the current rendering target. This will "clear" it
+        with whatever the current drawing color is.
+        */
+        SDL_RenderClear(renderer);
+
+        /*
+        An important thing to know about rendering is that just because
+        something has been drawn to the window doesn't mean that whatever was
+        drawn will be seen. It's required to update the window so that
+        everything is shown. What this is doing is updating the window with
+        any rendering that was performed since the previous call to
+        SDL_RenderPresent().
+        */
+        SDL_RenderPresent(renderer);
+    }
 
     printf("Shutting down SDL ...\n");
 
