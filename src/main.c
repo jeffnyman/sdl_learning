@@ -93,6 +93,18 @@ int main( int argc, char* argv[] ) {
     uint8_t r = 0, g = 0, b = 0;
 
     /*
+    Rendering a shape on the window that can move requires the shape being
+    established before the loop. SDL_Rect is a structure that contains the
+    definition of a rectangle, with the origin at the upper left.
+    */
+    SDL_Rect ball;
+
+    ball.x = 20;
+    ball.y = 20;
+    ball.w = 15;
+    ball.h = 15;
+
+    /*
     Any SDL-based program is going to need a loop. That loop will make sure
     that execution takes place in a persistent context.
     */
@@ -147,6 +159,21 @@ int main( int argc, char* argv[] ) {
         with whatever the current drawing color is.
         */
         SDL_RenderClear(renderer);
+
+        /*
+        You can now set the renderer color for the rectangular object, which
+        will act as a ball. This new color will now apply when the rectangle
+        is drawn.
+        */
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+        /*
+        The rectangle can now be drawn to the screen, in the appropriate
+        color. Notice that if you did not want the rectangle filled in,
+        you could just do this:
+        SDL_RenderDrawRect(renderer, &rect);
+        */
+        SDL_RenderFillRect(renderer, &ball);
 
         /*
         An important thing to know about rendering is that just because
