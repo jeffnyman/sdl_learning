@@ -1,5 +1,15 @@
 #include "common.h"
 
+/*
+The definitions set up the frames per second and then a frame time that is
+based on those frames. The frame time is what it sounds like: it's literally
+how much time a given frame is going to take to process. So if you want 30
+frames per second then that means in that second, each frame will have to
+take 33.333 milliseconds.
+*/
+#define FPS 30
+#define FRAME_TIME (1000 / FPS)
+
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
@@ -92,6 +102,9 @@ int main( int argc, char* argv[] ) {
     // Values for the draw color.
     uint8_t r = 0, g = 0, b = 0;
 
+    // Milliseconds since the last frame that was called.
+    uint32_t last_frame_time = 0;
+
     /*
     Rendering a shape on the window that can move requires the shape being
     established before the loop. SDL_Rect is a structure that contains the
@@ -144,6 +157,33 @@ int main( int argc, char* argv[] ) {
                     }
             }
         }
+
+        /*
+        SDL measures time in "ticks", which is the number of milliseconds that
+        have elapsed since the SDL library initialized. The SDL_GetTicks()
+        function provides an usigned 32-bit value representing this measure
+        of time.
+        */
+        last_frame_time = SDL_GetTicks();
+
+        /*
+        Churn a bit (i.e., sleep) until the frame target time has been
+        reached. In other words, the logic "sleeps" until it reaches the
+        amount of time that each frame will take. The SDL_TICKS_PASSED()
+        essentially compares two time durations, in milliseconds, and
+        passes when the time duration has passed. So this is saying to
+        compare the current time with the time of the last frame plus
+        the stated frame time. So basically this is saying "sleep until
+        the current frame duration has passed."
+        */
+        while (!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TIME));
+
+        /*
+        After polling for events but before rendering anything, the loop
+        should update the display.
+        */
+        ball.x += 5;
+        ball.y += 5;
 
         /*
         Whatever is rendered to the window will be a certain color. You can
