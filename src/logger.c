@@ -16,13 +16,21 @@ static struct {
 } logger;
 
 static const char *level_settings[] = {
-    "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"
+    "DEBUG", "TRACE", "INFO", "WARN", "ERROR", "FATAL"
 };
+
+static inline const char *get_level_setting(int level) {
+    return level_settings[(level + 32) / 32];
+}
 
 #ifdef LOG_USE_COLOR
 static const char *level_colors[] = {
-    "\x1b[94m", "\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"
+    "\x1b[36m", "\x1b[94m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"
 };
+
+static inline const char *get_level_color(int level) {
+    return level_colors[(level + 32) / 32];
+}
 #endif
 
 void log_set_level(int level) {
@@ -87,8 +95,8 @@ static void stdout_display(log_event *ev) {
         ev -> udata,
         "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
         buffer,
-        level_colors[ev -> level],
-        level_settings[ev -> level],
+        get_level_color(ev -> level),
+        get_level_setting(ev -> level),
         ev -> file,
         ev -> line
     );
@@ -97,7 +105,7 @@ static void stdout_display(log_event *ev) {
         ev -> udata,
         "%s %-5s %s:%d: ",
         buffer,
-        level_settings[ev -> level],
+        get_level_setting(ev -> level),
         ev -> file,
         ev -> line
     );
@@ -115,6 +123,7 @@ void log_message(int level, const char *file, int line, const char *message, ...
     (void)file;
     (void)line;
     (void)message;
+    (void)get_level_setting;
 
 #ifdef LOG_USE
 log_event ev = {

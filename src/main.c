@@ -2,8 +2,6 @@
 #include "logger.h"
 
 int main( int argc, char* argv[] ) {
-    log_set_level(LOG_DEBUG);
-    
     log_debug("argc = %d\n", argc);
 
     for (int i = 0; i < argc; ++i) {

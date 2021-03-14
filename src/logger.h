@@ -6,9 +6,20 @@
 #include <stdbool.h>
 #include <time.h>
 
+#ifndef DEFAULT_LOG_LEVEL
+#define DEFAULT_LOG_LEVEL 4
+#endif
+
 // Data structures.
 
-enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
+enum {
+    LOG_DEBUG = 0,
+    LOG_TRACE = 1,
+    LOG_INFO  = 2,
+    LOG_WARN  = 3,
+    LOG_ERROR = 4,
+    LOG_FATAL = 5,
+};
 
 typedef struct {
     va_list ap;
@@ -24,12 +35,12 @@ typedef void (*log_display)(log_event *ev);
 
 // Macro definitions.
 
-#define log_trace(...) log_message(LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define log_debug(...) log_message(LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define log_info(...)  log_message(LOG_INFO,  __FILE__, __LINE__, __VA_ARGS__)
-#define log_warn(...)  log_message(LOG_WARN,  __FILE__, __LINE__, __VA_ARGS__)
-#define log_error(...) log_message(LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define log_fatal(...) log_message(LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+#define log_debug(...) do { if (LOG_DEBUG == DEFAULT_LOG_LEVEL) log_message(LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__); } while(0)
+#define log_trace(...) do { if (LOG_TRACE == DEFAULT_LOG_LEVEL) log_message(LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__); } while(0)
+#define log_info(...)  do { if (LOG_INFO == DEFAULT_LOG_LEVEL) log_message(LOG_INFO,  __FILE__, __LINE__, __VA_ARGS__); } while(0)
+#define log_warn(...)  do { if (LOG_WARN == DEFAULT_LOG_LEVEL) log_message(LOG_WARN,  __FILE__, __LINE__, __VA_ARGS__); } while(0)
+#define log_error(...) do { if (LOG_ERROR == DEFAULT_LOG_LEVEL) log_message(LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__); } while(0)
+#define log_fatal(...) do { if (LOG_FATAL == DEFAULT_LOG_LEVEL) log_message(LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__); } while(0)
 
 // Function declarations.
 
