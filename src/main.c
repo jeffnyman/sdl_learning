@@ -76,6 +76,30 @@ int main( int argc, char* argv[] ) {
         return false;
     }
 
+    /*
+    Whatever is rendered to the window will be a certain color. You can set
+    the draw color of the renderer and this color will impact whatever is
+    rendered next. Note that the last argument is called the "alpha value."
+    A value of 255 refers to SDL_ALPHA_OPAQUE. A value of 0 would refer to
+    SDL_ALPHA_TRANSPARENT.
+    */
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    /*
+    Now you can clear the current rendering target. This will "clear" it
+    with whatever the current drawing color is.
+    */
+    SDL_RenderClear(renderer);
+
+    /*
+    An important thing to know about rendering is that just because something
+    has been drawn to the window doesn't mean that whatever was drawn will be
+    seen. It's required to update the window so that everything is shown.
+    What this is doing is updating the window with any rendering that was
+    performed since the previous call to SDL_RenderPresent().
+    */
+    SDL_RenderPresent(renderer);
+
     printf("All looks good...\n");
 
     /*
