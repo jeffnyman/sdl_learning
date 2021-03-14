@@ -89,6 +89,9 @@ int main( int argc, char* argv[] ) {
 
     bool running = true;
 
+    // Values for the draw color.
+    uint8_t r = 0, g = 0, b = 0;
+
     /*
     Any SDL-based program is going to need a loop. That loop will make sure
     that execution takes place in a persistent context.
@@ -117,6 +120,16 @@ int main( int argc, char* argv[] ) {
                 case SDL_QUIT:
                     running = false;
                     break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                            running = false;
+                            break;
+                        default:
+                            r = (uint8_t)(rand() % 255);
+                            g = (uint8_t)(rand() % 255);
+                            b = (uint8_t)(rand() % 255);
+                    }
             }
         }
 
@@ -127,7 +140,7 @@ int main( int argc, char* argv[] ) {
         value." A value of 255 refers to SDL_ALPHA_OPAQUE. A value of 0 would
         refer to SDL_ALPHA_TRANSPARENT.
         */
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 
         /*
         Now you can clear the current rendering target. This will "clear" it
