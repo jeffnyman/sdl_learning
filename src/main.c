@@ -1,10 +1,13 @@
 #include "common.h"
+#include "logger.h"
 
 int main( int argc, char* argv[] ) {
-    printf("argc = %d\n", argc);
+    log_set_level(LOG_DEBUG);
+    
+    log_debug("argc = %d\n", argc);
 
     for (int i = 0; i < argc; ++i) {
-        printf("argv[%d] = %s\n", i, argv[i]);
+        log_debug("argv[%d] = %s\n", i, argv[i]);
     }
 
     return EXIT_SUCCESS;
