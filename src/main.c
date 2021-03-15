@@ -48,7 +48,7 @@ struct game_object {
     float h;
     float vx;
     float vy;
-} ball;
+} ball, paddle;
 
 bool running = false;
 
@@ -195,6 +195,20 @@ void render_display(void) {
     SDL_RenderFillRect(renderer, &ball_rect);
 
     /*
+    You can now render a second object, which will correspond to the paddle.
+    As with the ball, this new object has to be rendered and then filled.
+    */
+    SDL_Rect paddle_rect = {
+        (int)paddle.x,
+        (int)paddle.y,
+        (int)paddle.w,
+        (int)paddle.h,
+    };
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(renderer, &paddle_rect);
+
+    /*
     An important thing to know about rendering is that just because
     something has been drawn to the window doesn't mean that whatever was
     drawn will be seen. It's required to update the window so that
@@ -314,6 +328,13 @@ void setup(void) {
     ball.h = 15;
     ball.vx = 200;
     ball.vy = 200;
+
+    paddle.w = 100;
+    paddle.h = 20;
+    paddle.vx = 0;
+    paddle.vy = 0;
+    paddle.x = (WINDOW_WIDTH / 2) - (paddle.w / 2);
+    paddle.y = WINDOW_HEIGHT - 40;
 }
 
 void cleanup(void) {
