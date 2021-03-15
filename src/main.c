@@ -35,11 +35,20 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
 /*
-Rendering a shape on the window that can move requires the shape being
-established before the loop. SDL_Rect is a structure that contains the
-definition of a rectangle, with the origin at the upper left.
+It can be useful to create a structure to hold data that will require
+more fields than you might get otherwise. The ball object in this
+example is going to a type of SDL_Rect and that provides properties
+for x, y, w (width), and h (height). But there may also be a desire
+to have other properties, such as velocity.
 */
-SDL_Rect ball;
+struct game_object {
+    float x;
+    float y;
+    float w;
+    float h;
+    float vx;
+    float vy;
+} ball;
 
 bool running = false;
 
@@ -137,8 +146,8 @@ void update_display(void) {
     should update the display. The modifier of delta time means that
     game objects will move correctly regardless of frame rate.
     */
-    ball.x += (int)(70 * delta_time);
-    ball.y += (int)(70 * delta_time);
+    ball.x += (int)(ball.vx * delta_time);
+    ball.y += (int)(ball.vy * delta_time);
 }
 
 void render_display(void) {
@@ -165,12 +174,25 @@ void render_display(void) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     /*
+    Rendering a shape on the window that can move requires the shape being
+    established before the loop. SDL_Rect is a structure that contains the
+    definition of a rectangle, with the origin at the upper left. Here the
+    SDL_Rect will have the values of the ball structure defined earlier.
+    */
+    SDL_Rect ball_rect = {
+        (int)ball.x,
+        (int)ball.y,
+        (int)ball.w,
+        (int)ball.h,
+    };
+
+    /*
     The rectangle can now be drawn to the screen, in the appropriate
     color. Notice that if you did not want the rectangle filled in,
     you could just do this:
     SDL_RenderDrawRect(renderer, &rect);
     */
-    SDL_RenderFillRect(renderer, &ball);
+    SDL_RenderFillRect(renderer, &ball_rect);
 
     /*
     An important thing to know about rendering is that just because
@@ -290,6 +312,8 @@ void setup(void) {
     ball.y = 20;
     ball.w = 15;
     ball.h = 15;
+    ball.vx = 200;
+    ball.vy = 200;
 }
 
 void cleanup(void) {
