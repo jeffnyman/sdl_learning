@@ -176,6 +176,10 @@ int main( int argc, char* argv[] ) {
         last_frame_time = SDL_GetTicks();
 
         /*
+        NOTE: This while loop is not going to be used because it can be
+        very expensive for the CPU. The solution following it is what
+        should be done.
+
         Churn a bit (i.e., sleep) until the frame target time has been
         reached. In other words, the logic "sleeps" until it reaches the
         amount of time that each frame will take. The SDL_TICKS_PASSED()
@@ -185,7 +189,26 @@ int main( int argc, char* argv[] ) {
         the stated frame time. So basically this is saying "sleep until
         the current frame duration has passed."
         */
-        while (!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TIME));
+        // while (!SDL_TICKS_PASSED(SDL_GetTicks(), last_frame_time + FRAME_TIME));
+
+        /*
+        The time_to_wait variable is storing, frame by frame, how many
+        milliseconds to wait. This is based on the FRAME_TIME, which is
+        how long each frame should take, minus the difference between
+        the ticks now (for the current frame) minus the milliseconds of
+        the previous frame. This is variable is basically storing how
+        many milliseconds to "churn" or "sleep" until execution should
+        resume once again.
+        */
+        uint32_t time_to_wait = FRAME_TIME - (SDL_GetTicks() - last_frame_time);
+
+        /*
+        Here the standard SDL delay is called but only if things are
+        moving too fast to process the current frame.
+        */
+        if (time_to_wait > 0 && time_to_wait <= FRAME_TIME) {
+            SDL_Delay(time_to_wait);
+        }
 
         /*
         After polling for events but before rendering anything, the loop
