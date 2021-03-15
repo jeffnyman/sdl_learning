@@ -148,6 +148,9 @@ void update_display(void) {
     */
     ball.x += (int)(ball.vx * delta_time);
     ball.y += (int)(ball.vy * delta_time);
+
+    paddle.x += paddle.vx * delta_time;
+    paddle.y += paddle.vy * delta_time;
 }
 
 void render_display(void) {
@@ -255,11 +258,28 @@ void process_input(void) {
             case SDLK_ESCAPE:
                 running = false;
                 break;
+            case SDLK_LEFT:
+                paddle.vx = -400;
+                break;
+            case SDLK_RIGHT:
+                paddle.vx = +400;
+                break;
             default:
                 r = (uint8_t)(rand() % 255);
                 g = (uint8_t)(rand() % 255);
                 b = (uint8_t)(rand() % 255);
             }
+            break;
+        case SDL_KEYUP:
+            switch (event.key.keysym.sym) {
+            case SDLK_LEFT:
+                paddle.vx = 0;
+                break;
+            case SDLK_RIGHT:
+                paddle.vx = 0;
+                break;
+            }
+            break;
         }
     }
 }
