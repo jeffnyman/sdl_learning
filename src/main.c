@@ -159,6 +159,15 @@ int main( int argc, char* argv[] ) {
         }
 
         /*
+        This provides a delta time factor. The goal is to focus on how many
+        pixels per second as opposed to how many pixels per frame. This is
+        done by taking the difference in ticks from the last frame to the
+        current one, converted to seconds. This makes the delta time the
+        amount of time elapsed since last frame.
+        */
+        float delta_time = (SDL_GetTicks() - last_frame_time) / 1000.0f;
+
+        /*
         SDL measures time in "ticks", which is the number of milliseconds that
         have elapsed since the SDL library initialized. The SDL_GetTicks()
         function provides an usigned 32-bit value representing this measure
@@ -180,10 +189,11 @@ int main( int argc, char* argv[] ) {
 
         /*
         After polling for events but before rendering anything, the loop
-        should update the display.
+        should update the display. The modifier of delta time means that
+        game objects will move correctly regardless of frame rate.
         */
-        ball.x += 5;
-        ball.y += 5;
+        ball.x += (int)(70 * delta_time);
+        ball.y += (int)(70 * delta_time);
 
         /*
         Whatever is rendered to the window will be a certain color. You can
