@@ -151,6 +151,18 @@ void update_display(void) {
 
     paddle.x += paddle.vx * delta_time;
     paddle.y += paddle.vy * delta_time;
+
+    /*
+    The paddle object needs to be prevented from moving outside the
+    bounds of the window.
+    */
+    if (paddle.x <= 0) {
+        paddle.x = 0;
+    }
+
+    if (paddle.x >= WINDOW_WIDTH - paddle.w) {
+        paddle.x = WINDOW_WIDTH - paddle.w;
+    }
 }
 
 void render_display(void) {
