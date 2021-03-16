@@ -163,6 +163,39 @@ void update_display(void) {
     if (paddle.x >= WINDOW_WIDTH - paddle.w) {
         paddle.x = WINDOW_WIDTH - paddle.w;
     }
+
+    /*
+    The next bits of logic are a series of checks for the ball object.
+    The goal is to make sure that the ball bounces off of the walls in
+    the correct way. Here "walls" corresponds to the edges of the screen,
+    with the exception of the "bottom wall" which the ball should be
+    allowed to go pass as that is a losing condition. It's also important
+    to handle the ball colliding with the paddle.
+    */
+
+    if (ball.x <= 0 || ball.x + ball.w >= WINDOW_WIDTH) {
+        ball.vx = -ball.vx;
+    }
+
+    if (ball.y < 0) {
+        ball.vy = -ball.vy;
+    }
+
+    if ((ball.y + ball.h >= paddle.y) &&
+        (ball.x + ball.w >= paddle.x) &&
+        (ball.x <= paddle.x + paddle.w)) {
+            ball.vy = -ball.vy;            
+    }
+
+    /*
+    Handle the technical "game over" situation, which is the ball moving
+    past the paddle. In this case, it just means the ball gets moved
+    back into play.
+    */
+    if (ball.y + ball.h > WINDOW_HEIGHT) {
+        ball.x = WINDOW_WIDTH / 2;
+        ball.y = 0;
+    }
 }
 
 void render_display(void) {
